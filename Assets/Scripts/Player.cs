@@ -7,11 +7,15 @@ public class Player : MonoBehaviour
 {
 	public float movementSpeed = 1;
 	public float jumpForce = 5000;
+	public float doubleJumpVel = 10;
+	public float antiFallingForce = 100;
+
 	public Rigidbody2D rb;
 	SpriteRenderer sr;
 
 	Vector2 force;
 	bool inContact;
+	bool doubleJumped;
 
 	int punkty = 0;
 	public Text punktyUI;
@@ -20,21 +24,34 @@ public class Player : MonoBehaviour
     {
 		sr = GetComponent<SpriteRenderer>();
     }
-    // Wywowy³wany w ka¿dej klatce gry
+
+	bool jumpHeldDown;
     void Update()
 	{
 		// Collecting Input
 		float inputX = Input.GetAxis("Horizontal");
 		float inputY = Input.GetAxis("Vertical");
 		bool inputJump = Input.GetButtonDown("Jump");
+		jumpHeldDown = Input.GetButton("Jump");
 
 		// Setting Global Parameters
 		force = new Vector2(inputX, inputY);
 
 
-        if (inputJump && inContact)
+        if (inputJump)
         {
-			rb.AddForce(Vector2.up * jumpForce);
+			if (inContact)
+			{
+				// regular jump
+				rb.AddForce(Vector2.up * jumpForce);
+				doubleJumped = false;
+			}
+			else if (!doubleJumped)
+			{
+				// second jump
+				rb.velocity = new Vector2(0, doubleJumpVel);
+				doubleJumped = true;
+			}
 		}
 
 
@@ -58,6 +75,10 @@ public class Player : MonoBehaviour
     {
 		rb.AddForce(force * movementSpeed);
 
+		if(jumpHeldDown && rb.velocity.y <= 0)
+        {
+			rb.AddForce( new Vector2(0, antiFallingForce) - new Vector2(0, rb.velocity.y * rb.mass )/Time.fixedDeltaTime);
+        }
 	}
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -86,6 +107,11 @@ public class Player : MonoBehaviour
 			punkty++;
 
 			punktyUI.text = "Punkty: " + punkty;
+        }
+
+		if(collision.CompareTag("Obstacle"))
+        {
+			GameManager.Instance.GameOver();
         }
     }
 }
