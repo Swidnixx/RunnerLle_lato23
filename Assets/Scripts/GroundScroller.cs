@@ -5,6 +5,7 @@ using UnityEngine;
 public class GroundScroller : MonoBehaviour
 {
     public SpriteRenderer tile1, tile2;
+    public SpriteRenderer[] tilePrefabs;
     float speed;
 
     private void FixedUpdate()
@@ -17,12 +18,19 @@ public class GroundScroller : MonoBehaviour
 
         if(tile2.transform.position.x < 0)
         {
-            tile1.transform.position = tile2.transform.position 
-                + new Vector3(tile1.bounds.size.x, 0, 0);
+            int index = Random.Range(0, tilePrefabs.Length);
 
-            var tmp = tile1;
+            SpriteRenderer newTile = Instantiate(tilePrefabs[index], transform);
+
+            Vector3 position = tile2.transform.position
+                 + new Vector3(tile2.bounds.size.x / 2, 0, 0)
+                 + new Vector3(newTile.bounds.size.x / 2, 0, 0);
+
+            newTile.transform.position = position;
+
+            Destroy(tile1.gameObject);
             tile1 = tile2;
-            tile2 = tmp;
+            tile2 = newTile;
         }
     }
 }

@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
 	Vector2 force;
 	bool inContact;
 	bool doubleJumped;
+	bool jumpHeldDown;
 
 	int punkty = 0;
 	public Text punktyUI;
@@ -24,8 +25,7 @@ public class Player : MonoBehaviour
     {
 		sr = GetComponent<SpriteRenderer>();
     }
-
-	bool jumpHeldDown;
+	
     void Update()
 	{
 		// Collecting Input
@@ -36,6 +36,16 @@ public class Player : MonoBehaviour
 
 		// Setting Global Parameters
 		force = new Vector2(inputX, inputY);
+
+		//Kucanie
+		if(inputY < 0)
+        {
+			transform.localScale = new Vector3(1, 0.5f, 1);
+        }
+		else
+        {
+			transform.localScale = Vector3.one;
+        }
 
 
         if (inputJump)
@@ -106,7 +116,7 @@ public class Player : MonoBehaviour
 			Destroy(collision.gameObject);
 			punkty++;
 
-			punktyUI.text = "Punkty: " + punkty;
+			punktyUI.text = punkty.ToString();
         }
 
 		if(collision.CompareTag("Obstacle"))
