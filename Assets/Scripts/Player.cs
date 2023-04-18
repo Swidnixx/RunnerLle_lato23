@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
 	int punkty = 0;
 	public Text punktyUI;
 
+	public Animator animator;
+
 	private void Start()
     {
 		sr = GetComponent<SpriteRenderer>();
@@ -52,12 +54,14 @@ public class Player : MonoBehaviour
         {
 			if (inContact)
 			{
+				animator.SetTrigger("jump");
 				// regular jump
 				rb.AddForce(Vector2.up * jumpForce);
 				doubleJumped = false;
 			}
 			else if (!doubleJumped)
 			{
+				animator.SetTrigger("jump");
 				// second jump
 				rb.velocity = new Vector2(0, doubleJumpVel);
 				doubleJumped = true;
@@ -95,8 +99,12 @@ public class Player : MonoBehaviour
     {
 		if(collision.GetContact(0).normal.y > 0.75)
         {
-			sr.color = Color.red;
-			inContact = true;
+            if (!inContact)
+            {
+                sr.color = Color.red;
+                inContact = true;
+				animator.SetBool("grounded", true);
+            }
 		}
     }
 
@@ -106,7 +114,8 @@ public class Player : MonoBehaviour
 			//Debug.Log("Collision exit: " + collision.GetContact(0).normal);
 			sr.color = Color.green;
 			inContact = false;
-    }
+		animator.SetBool("grounded", false);
+	}
 
 
     private void OnTriggerEnter2D(Collider2D collision)
