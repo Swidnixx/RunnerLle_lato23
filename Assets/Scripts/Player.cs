@@ -11,25 +11,33 @@ public class Player : MonoBehaviour
 	public float antiFallingForce = 100;
 
 	public Rigidbody2D rb;
+	public Animator animator;
 	SpriteRenderer sr;
 
+	//UI
+	public Text punktyUI;
+
+	//Jumping logic
 	Vector2 force;
 	bool inContact;
 	bool doubleJumped;
 	bool jumpHeldDown;
 
+	//Points
 	int punkty = 0;
-	public Text punktyUI;
 
-	public Animator animator;
+	//Game Over
+	bool dead;
 
 	private void Start()
-    {
-		sr = GetComponent<SpriteRenderer>();
-    }
-	
-    void Update()
 	{
+		sr = GetComponent<SpriteRenderer>();
+	}
+
+	void Update()
+	{
+		if (dead) return;
+
 		// Collecting Input
 		float inputX = Input.GetAxis("Horizontal");
 		float inputY = Input.GetAxis("Vertical");
@@ -40,18 +48,18 @@ public class Player : MonoBehaviour
 		force = new Vector2(inputX, inputY);
 
 		//Kucanie
-		if(inputY < 0)
-        {
+		if (inputY < 0)
+		{
 			transform.localScale = new Vector3(1, 0.5f, 1);
-        }
+		}
 		else
-        {
+		{
 			transform.localScale = Vector3.one;
-        }
+		}
 
 
-        if (inputJump)
-        {
+		if (inputJump)
+		{
 			if (inContact)
 			{
 				animator.SetTrigger("jump");
@@ -69,68 +77,79 @@ public class Player : MonoBehaviour
 		}
 
 
-		if(Input.GetKeyDown(KeyCode.X))
-        {
-			if(rb.gravityScale == 0)
-            {
+		if (Input.GetKeyDown(KeyCode.X))
+		{
+			if (rb.gravityScale == 0)
+			{
 				rb.gravityScale = 20;
-            }
+			}
 			else
-            {
+			{
 				rb.gravityScale = 0;
-            }
-        }
+			}
+		}
+
+		//Animator parameters
+		animator.SetFloat("velocityY", rb.velocity.y);
 
 		// Display Debug Info
 		//Debug.Log(force);
 	}
 
-    private void FixedUpdate()
-    {
+	private void FixedUpdate()
+	{
 		rb.AddForce(force * movementSpeed);
 
-		if(jumpHeldDown && rb.velocity.y <= 0)
-        {
-			rb.AddForce( new Vector2(0, antiFallingForce) - new Vector2(0, rb.velocity.y * rb.mass )/Time.fixedDeltaTime);
-        }
+		if (jumpHeldDown && rb.velocity.y <= 0)
+		{
+			rb.AddForce(new Vector2(0, antiFallingForce) - new Vector2(0, rb.velocity.y * rb.mass) / Time.fixedDeltaTime);
+		}
 	}
 
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-		if(collision.GetContact(0).normal.y > 0.75)
-        {
-            if (!inContact)
-            {
-                sr.color = Color.red;
-                inContact = true;
+	private void OnCollisionStay2D(Collision2D collision)
+	{
+		if (collision.GetContact(0).normal.y > 0.75)
+		{
+			if (!inContact)
+			{
+				sr.color = Color.red;
+				inContact = true;
 				animator.SetBool("grounded", true);
-            }
+			}
 		}
-    }
+	}
 
-    private void OnCollisionExit2D(Collision2D collision)
-    {
+	private void OnCollisionExit2D(Collision2D collision)
+	{
 
-			//Debug.Log("Collision exit: " + collision.GetContact(0).normal);
-			sr.color = Color.green;
-			inContact = false;
+		//Debug.Log("Collision exit: " + collision.GetContact(0).normal);
+		sr.color = Color.green;
+		inContact = false;
 		animator.SetBool("grounded", false);
 	}
 
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-		if(collision.tag == "Pickup")
-        {
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		if (collision.tag == "Pickup")
+		{
 			Destroy(collision.gameObject);
 			punkty++;
 
 			punktyUI.text = punkty.ToString();
-        }
+		}
 
-		if(collision.CompareTag("Obstacle"))
-        {
-			GameManager.Instance.GameOver();
-        }
-    }
+		if (collision.CompareTag("Obstacle"))
+		{
+			animator.SetTrigger("hit");
+			Invoke(nameof(PlayerDead), 2);
+			dead = true;
+			rb.bodyType = RigidbodyType2D.Static;
+			GameManager.Instance.worldSpeed = 0;
+		}
+	}
+	void PlayerDead()
+    {
+		GameManager.Instance.GameOver();
+	}
 }
