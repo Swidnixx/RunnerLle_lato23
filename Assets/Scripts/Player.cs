@@ -133,10 +133,13 @@ public class Player : MonoBehaviour
 	{
 		if (collision.tag == "Pickup")
 		{
-			Destroy(collision.gameObject);
+			//Destroy(collision.gameObject); // Moved to Pickup script
 			punkty++;
 
 			punktyUI.text = punkty.ToString();
+
+			var pickup = collision.GetComponent<Pickup>();
+			pickup.Collect();
 		}
 
 		if (collision.CompareTag("Obstacle"))
