@@ -32,8 +32,15 @@ public class Player : MonoBehaviour
 	private void Start()
 	{
 		sr = GetComponent<SpriteRenderer>();
+		animator.SetBool("appearing", true);
+		Invoke(nameof(Appeared), 0.583f);
+		rb.bodyType = RigidbodyType2D.Static;
 	}
-
+	public void Appeared()
+    {
+		rb.bodyType = RigidbodyType2D.Dynamic;
+		animator.SetBool("appearing", false);
+    }
 	void Update()
 	{
 		if (dead) return;
@@ -41,8 +48,8 @@ public class Player : MonoBehaviour
 		// Collecting Input
 		float inputX = Input.GetAxis("Horizontal");
 		float inputY = Input.GetAxis("Vertical");
-		bool inputJump = Input.GetButtonDown("Jump");
-		jumpHeldDown = Input.GetButton("Jump");
+		bool inputJump = Input.GetMouseButtonDown(0);
+		jumpHeldDown = Input.GetMouseButton(0);
 
 		// Setting Global Parameters
 		force = new Vector2(inputX, inputY);
