@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InGameMenu : MonoBehaviour
 {
@@ -18,18 +19,22 @@ public class InGameMenu : MonoBehaviour
         if(menuPanel.activeSelf)
         {
             menuPanel.SetActive(false);
+            GameManager.Instance.Resume();
         }
         else
         {
             menuPanel.SetActive(true);
+            GameManager.Instance.Pause();
         }
     }
     public void ContinueButton()
     {
-
+        menuPanel.SetActive(false);
+        GameManager.Instance.Resume();
     }
     public void HomeButton()
     {
-
+        SceneManager.LoadScene(0);
+        GameManager.Instance.Resume();
     }
 }

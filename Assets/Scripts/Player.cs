@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
@@ -50,6 +51,9 @@ public class Player : MonoBehaviour
 		float inputY = Input.GetAxis("Vertical");
 		bool inputJump = Input.GetMouseButtonDown(0);
 		jumpHeldDown = Input.GetMouseButton(0);
+
+		bool overUI = EventSystem.current.IsPointerOverGameObject();
+		inputJump &= !overUI;
 
 		// Setting Global Parameters
 		force = new Vector2(inputX, inputY);
@@ -149,7 +153,7 @@ public class Player : MonoBehaviour
 			pickup.Collect();
 		}
 
-		if (collision.CompareTag("Obstacle"))
+		if (collision.CompareTag("Obstacle") && !GameManager.Instance.immortality.active)
 		{
 			animator.SetTrigger("hit");
 			Invoke(nameof(PlayerDead), 2);
