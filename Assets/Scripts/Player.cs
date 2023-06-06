@@ -151,9 +151,10 @@ public class Player : MonoBehaviour
 
 			var pickup = collision.GetComponent<Pickup>();
 			pickup.Collect();
+			PlayerPrefs.SetInt("Coins", punkty);
 		}
 
-		if (collision.CompareTag("Obstacle") && !GameManager.Instance.immortality.active)
+		if (collision.CompareTag("Obstacle") && !GameManager.Instance.powerupManager.Immortality.active)
 		{
 			animator.SetTrigger("hit");
 			Invoke(nameof(PlayerDead), 2);

@@ -21,12 +21,11 @@ public class GameManager : MonoBehaviour
 
     public GameObject restartButton;
 
-    public MagnetSO magnet;
-    public ImmortalitySO immortality;
+    public PowerupManager powerupManager;
     private void Start()
     {
         DeactivateMagnet();
-        immortality.active = false;
+        powerupManager.Immortality.active = false;
     }
 
     private void FixedUpdate()
@@ -61,29 +60,29 @@ public class GameManager : MonoBehaviour
     {
         CancelInvoke(nameof(DeactivateMagnet));
 
-        magnet.active = true;
-        Invoke(nameof(DeactivateMagnet), magnet.duration);
+        powerupManager.Magnet.active = true;
+        Invoke(nameof(DeactivateMagnet), powerupManager.Magnet.duration);
     }
     void DeactivateMagnet()
     {
-        magnet.active = false;
+        powerupManager.Magnet.active = false;
     }
 
     public void ActivateImmortality()
     {
-        if(immortality.active)
+        if(powerupManager.Immortality.active)
         {
             CancelInvoke(nameof(DeactivateImmortality));
-            worldSpeed -= immortality.speed;
+            worldSpeed -= powerupManager.Immortality.speed;
         }
 
-        immortality.active = true;
-        worldSpeed += immortality.speed;
-        Invoke(nameof(DeactivateImmortality), immortality.duration);
+        powerupManager.Immortality.active = true;
+        worldSpeed += powerupManager.Immortality.speed;
+        Invoke(nameof(DeactivateImmortality), powerupManager.Immortality.duration);
     }
     void DeactivateImmortality()
     {
-        immortality.active = false;
-        worldSpeed -= immortality.speed;
+        powerupManager.Immortality.active = false;
+        worldSpeed -= powerupManager.Immortality.speed;
     }
 }

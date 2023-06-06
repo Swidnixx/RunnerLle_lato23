@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33d9a7abc51cbe64b95e1ba62b669528, type: 3}
-  m_Name: Magnet1
+  m_Name: Magnet2
   m_EditorClassIdentifier: 
   active: 0
-  duration: 5
-  speed: 5
-  maxDistance: 4
+  duration: 10
+  level: 2
+  upgradeCost: 3000
+  upgraded: {fileID: 0}
+  speed: 7
+  maxDistance: 7

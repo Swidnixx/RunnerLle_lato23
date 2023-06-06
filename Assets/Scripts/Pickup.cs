@@ -19,13 +19,13 @@ internal class Pickup : MonoBehaviour
 
     private void Update()
     {
-        if(gm.magnet.active)
+        if(gm.powerupManager.Magnet.active)
         {
             float distance = Vector2.Distance(transform.position, player.position);
-            if (distance < gm.magnet.maxDistance)
+            if (distance < gm.powerupManager.Magnet.maxDistance)
             {
                 transform.position =
-             Vector2.MoveTowards(transform.position, player.position, Time.deltaTime * gm.magnet.speed); 
+             Vector2.MoveTowards(transform.position, player.position, Time.deltaTime * gm.powerupManager.Magnet.speed); 
             }
         }
     }
@@ -34,5 +34,6 @@ internal class Pickup : MonoBehaviour
     {
         animator.SetTrigger("collect");
         Destroy(gameObject, 0.5f);
+
     }
 }
