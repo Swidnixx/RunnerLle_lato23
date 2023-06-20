@@ -8,6 +8,7 @@ public class MagnetBehaviour : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
+            SoundManager.Instance.PlayMagnet();
             Destroy(gameObject);
             GameManager.Instance.ActivateMagnet();
         }

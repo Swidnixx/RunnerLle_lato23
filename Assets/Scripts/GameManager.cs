@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour
 
     public void GameRestart()
     {
+        SoundManager.Instance.PlayClickUI();
+
         SceneManager.LoadScene( SceneManager.GetActiveScene().name );
         Time.timeScale = 1;
     }

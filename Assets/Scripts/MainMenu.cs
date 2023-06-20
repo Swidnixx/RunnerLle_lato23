@@ -10,12 +10,16 @@ public class MainMenu : MonoBehaviour
 
     public void MenuShopSwitch( bool toShop )
     {
+        SoundManager.Instance.PlayClickUI();
+
         mainMenuPanel.SetActive(!toShop);
         shopPanel.SetActive(toShop);
     }
 
     public void PlayButton()
     {
+        SoundManager.Instance.PlayClickUI();
+
         SceneManager.LoadScene(1);
     }
 }

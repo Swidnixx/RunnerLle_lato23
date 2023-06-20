@@ -14,7 +14,7 @@ public class InGameMenu : MonoBehaviour
 
     public void PauseButton()
     {
-        Input.ResetInputAxes();
+        SoundManager.Instance.PlayClickUI();
 
         if(menuPanel.activeSelf)
         {
@@ -29,11 +29,15 @@ public class InGameMenu : MonoBehaviour
     }
     public void ContinueButton()
     {
+        SoundManager.Instance.PlayClickUI();
+
         menuPanel.SetActive(false);
         GameManager.Instance.Resume();
     }
     public void HomeButton()
     {
+        SoundManager.Instance.PlayClickUI();
+
         SceneManager.LoadScene(0);
         GameManager.Instance.Resume();
     }

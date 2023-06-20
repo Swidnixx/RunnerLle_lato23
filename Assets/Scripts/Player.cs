@@ -32,6 +32,9 @@ public class Player : MonoBehaviour
 
 	private void Start()
 	{
+		punkty = PlayerPrefs.GetInt("Coins");
+		punktyUI.text = punkty.ToString();
+
 		sr = GetComponent<SpriteRenderer>();
 		animator.SetBool("appearing", true);
 		Invoke(nameof(Appeared), 0.583f);
@@ -52,7 +55,13 @@ public class Player : MonoBehaviour
 		bool inputJump = Input.GetMouseButtonDown(0);
 		jumpHeldDown = Input.GetMouseButton(0);
 
-		bool overUI = EventSystem.current.IsPointerOverGameObject();
+		bool overUI;
+#if UNITY_EDITOR
+		overUI = EventSystem.current.IsPointerOverGameObject();
+#else
+		overUI = EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
+#endif
+
 		inputJump &= !overUI;
 
 		// Setting Global Parameters
@@ -73,6 +82,7 @@ public class Player : MonoBehaviour
 		{
 			if (inContact)
 			{
+				SoundManager.Instance.PlayJump();
 				animator.SetTrigger("jump");
 				// regular jump
 				rb.AddForce(Vector2.up * jumpForce);
@@ -80,6 +90,7 @@ public class Player : MonoBehaviour
 			}
 			else if (!doubleJumped)
 			{
+				SoundManager.Instance.PlayJump();
 				animator.SetTrigger("jump");
 				// second jump
 				rb.velocity = new Vector2(0, doubleJumpVel);
@@ -144,6 +155,7 @@ public class Player : MonoBehaviour
 	{
 		if (collision.tag == "Pickup")
 		{
+			SoundManager.Instance.PlayPickup();
 			//Destroy(collision.gameObject); // Moved to Pickup script
 			punkty++;
 
@@ -156,6 +168,8 @@ public class Player : MonoBehaviour
 
 		if (collision.CompareTag("Obstacle") && !GameManager.Instance.powerupManager.Immortality.active)
 		{
+			SoundManager.Instance.PlayDead();
+
 			animator.SetTrigger("hit");
 			Invoke(nameof(PlayerDead), 2);
 			dead = true;

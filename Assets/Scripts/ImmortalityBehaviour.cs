@@ -8,6 +8,7 @@ public class ImmortalityBehaviour : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
+            SoundManager.Instance.PlayBattery();
             Destroy(gameObject);
             GameManager.Instance.ActivateImmortality();
         }

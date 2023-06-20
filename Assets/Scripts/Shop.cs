@@ -49,6 +49,7 @@ public class Shop : MonoBehaviour
     {
         if (coins >= powerupManager.Magnet.upgradeCost)
         {
+            SoundManager.Instance.PlayBuySound();
             coins -= powerupManager.Magnet.upgradeCost;
             PlayerPrefs.SetInt("Coins", coins);
             coinsText.text = coins.ToString();
@@ -57,6 +58,7 @@ public class Shop : MonoBehaviour
         }
         else
         {
+            SoundManager.Instance.PlayBuyFailed();
             Debug.Log("Not enough money");
         }
     }
@@ -83,6 +85,7 @@ public class Shop : MonoBehaviour
     {
         if( coins >= powerupManager.Immortality.upgradeCost )
         {
+            SoundManager.Instance.PlayBuySound();
             coins -= powerupManager.Immortality.upgradeCost;
             PlayerPrefs.SetInt("Coins", coins);
             coinsText.text = coins.ToString();
@@ -91,6 +94,7 @@ public class Shop : MonoBehaviour
         }
         else
         {
+            SoundManager.Instance.PlayBuyFailed();
             Debug.Log("Not enough money");
         }
     }
